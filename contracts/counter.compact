@@ -1,0 +1,7 @@
+pragma language_version >= 0.14.0;
+
+export ledger counter: Cell<Uint<32>>;
+
+export circuit increment(): [] {
+    counter = counter.read() + 1;
+}
