@@ -9,7 +9,7 @@ witness secret_password(): Bytes<32>;
 
 export circuit increment(): [] {
     assert(persistentHash<Bytes<32>>(secret_password()) == secret_hash, "Incorrect password");
-    counter = counter + 1;
+    counter = (counter + 1) as Uint<32>;
 }
 
 constructor(initial_hash: Bytes<32>) {
