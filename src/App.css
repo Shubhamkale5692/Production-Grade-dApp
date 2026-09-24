@@ -451,3 +451,118 @@ h1, h2, h3, .brand {
 }
 
 /* UI Polished for Level 3 Submission */
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  animation: slideIn 0.2s ease-out forwards;
+}
+
+.modal-header {
+  padding: 24px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.modal-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: white;
+}
+
+.modal-badge {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-body {
+  padding: 0 24px 24px;
+  text-align: center;
+  color: #a1a1aa;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-btn-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.modal-btn-cancel:hover:not(:disabled) {
+  background: rgba(255,255,255,0.15);
+}
+
+.modal-btn-connect {
+  flex: 1;
+  padding: 12px;
+  border-radius: 100px;
+  background: white;
+  color: black;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.modal-btn-connect:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.modal-btn-connect:disabled {
+  background: rgba(255,255,255,0.3);
+  color: rgba(0,0,0,0.5);
+  cursor: not-allowed;
+  transform: none;
+}

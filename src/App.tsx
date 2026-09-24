@@ -17,6 +17,18 @@ function App() {
   const [walletAddress, setWalletAddress] = useState<string>('');
   
   const [secretPassword, setSecretPassword] = useState('');
+  const [showWalletModal, setShowWalletModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setError(null);
+    setSuccessMsg(null);
+    setShowWalletModal(true);
+  };
+
+  const handleCancelModal = () => {
+    setShowWalletModal(false);
+    setError("Wallet connection was rejected. Please try again.");
+  };
 
   const connectWallet = async () => {
     if (isConnecting || walletConnected) return;
@@ -27,7 +39,7 @@ function App() {
     
     try {
       if (typeof window === 'undefined' || !window.midnight) {
-        throw new Error("The Midnight wallet connector is unavailable. Please install the extension.");
+        throw new Error("The Midnight wallet connector is unavailable. Please install a compatible wallet like Lace.");
       }
 
       const walletIds = Object.keys(window.midnight);
@@ -48,7 +60,7 @@ function App() {
           api = wallet;
         }
       } catch (e: any) {
-        throw new Error("Wallet connection was rejected. Please approve the request in Lace Wallet to continue.");
+        throw new Error("Wallet connection was rejected. Please try again.");
       }
       
       if (!api) {
@@ -67,9 +79,11 @@ function App() {
       }
       
       setWalletConnected(true);
+      setShowWalletModal(false);
       setSuccessMsg("Wallet connected successfully!");
     } catch (err: any) {
       setWalletConnected(false);
+      setShowWalletModal(false);
       setError(err.message || "Failed to connect wallet.");
     } finally {
       setIsConnecting(false);
@@ -134,8 +148,8 @@ function App() {
         
         <div className="nav-actions">
           {!walletConnected ? (
-            <button className="btn btn-nav" onClick={connectWallet} disabled={isConnecting}>
-              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            <button className="btn btn-nav" onClick={handleOpenModal}>
+              Connect Wallet
             </button>
           ) : (
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -210,6 +224,44 @@ function App() {
           </div>
         </section>
       </main>
+
+      {/* Wallet Connection Modal */}
+      {showWalletModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                  <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                  <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                </svg>
+              </div>
+              <div className="modal-title">localhost</div>
+              <div className="modal-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Connection Request
+              </div>
+            </div>
+            <div className="modal-body">
+              Allow localhost to view your wallet address, balance, activity, and request approval for transactions.
+              {isConnecting && (
+                <div style={{ marginTop: '16px', color: 'white', fontWeight: 500 }}>
+                  Please approve in your Lace extension...
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="modal-btn-cancel" onClick={handleCancelModal} disabled={isConnecting}>
+                Cancel
+              </button>
+              <button className="modal-btn-connect" onClick={connectWallet} disabled={isConnecting}>
+                {isConnecting ? 'Connecting...' : 'Connect'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
