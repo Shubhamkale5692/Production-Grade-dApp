@@ -33,13 +33,30 @@ function App() {
       const walletId = walletIds[0];
       const wallet = (window as any).midnight[walletId];
       
-      // Connect to Lace using actual DApp Connector API
-      const api = await wallet.connect();
+      console.log("Found Midnight wallet:", walletId, wallet);
+      
+      let api;
+      // Try to connect using whichever method the wallet exposes
+      if (typeof wallet.enable === 'function') {
+        api = await wallet.enable();
+      } else if (typeof wallet.connect === 'function') {
+        // Some newer API versions require a network string, try preprod or undefined
+        try {
+          api = await wallet.connect('preprod');
+        } catch(e) {
+          api = await wallet.connect();
+        }
+      } else {
+        // Some API versions just expose the API directly on the wallet object
+        api = wallet;
+      }
       
       try {
-        const state = await api.state();
-        if (state && state.address) {
-          setWalletAddress(state.address);
+        if (api && typeof api.state === 'function') {
+          const state = await api.state();
+          if (state && state.address) {
+            setWalletAddress(state.address);
+          }
         }
       } catch (e) {
         console.log("Could not fetch wallet state:", e);
