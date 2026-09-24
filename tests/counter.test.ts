@@ -6,7 +6,10 @@ describe('Counter Contract with Privacy', () => {
   const mockPassword = "my-super-secret-password";
   
   // Mock persistentHash (usually done by the SDK in reality)
-  const mockPersistentHash = (input: string) => `hashed_${input}`;
+  const mockPersistentHash = (input: string) => {
+    // Simple mock hash that doesn't contain the raw string
+    return Buffer.from(input).toString('base64').substring(0, 10);
+  };
 
   beforeEach(() => {
     ledgerState = { 
