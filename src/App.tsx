@@ -38,16 +38,25 @@ function App() {
       let api;
       
       try {
-        if (typeof wallet.connect === 'function') {
-          api = await wallet.connect();
-        } else if (typeof wallet.enable === 'function') {
-          api = await wallet.enable();
-        } else {
-          api = wallet;
-        }
+        const connectPromise = async () => {
+          if (typeof wallet.connect === 'function') {
+            return await wallet.connect();
+          } else if (typeof wallet.enable === 'function') {
+            return await wallet.enable();
+          } else {
+            return wallet;
+          }
+        };
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Wallet connection timed out! The Lace popup might be hidden behind your browser window, or the extension is locked.")), 8000);
+        });
+
+        api = await Promise.race([connectPromise(), timeoutPromise]);
+        
       } catch (e: any) {
         alert("Wallet Authorization Error: " + (e.message || String(e)));
-        throw new Error("Connection request was rejected or failed. Please unlock your Lace wallet and try again.");
+        throw new Error("Connection request was rejected, timed out, or failed. Please unlock your Lace wallet and try again.");
       }
       
       try {
