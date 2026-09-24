@@ -5,9 +5,8 @@ import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client
 import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-fetch-zk-config-provider';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 
-// Note: You must run `npm run compile` first so that the `counter` export is available.
 // @ts-ignore
-import { counter } from '../contracts/counter.cjs';
+import * as counter from '../contracts/contract/index.js';
 
 async function deploy() {
   console.log("Setting up providers for Preprod...");
