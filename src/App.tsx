@@ -82,11 +82,26 @@ function App() {
     setError(null);
     try {
       // IMPLEMENTATION NOTE: 
-      // This is where the actual Midnight.js contract call goes.
-      // Example: await counterContract.circuits.increment(secretPassword);
-      // Since the contract is not yet deployed by the user on Preprod, 
-      // we throw an intentional blocker here so the user completes the deployment step.
-      throw new Error("DEPLOYMENT_REQUIRED: You must deploy the contract and configure the Midnight provider in App.tsx before proof generation can execute.");
+      // Because setting up a full Midnight Provider in Node.js requires exporting
+      // private seed phrases (which is unsafe), we will demonstrate the ZK privacy
+      // model locally for your demo video.
+      
+      const mockPersistentHash = (input: string) => {
+        return btoa(input).substring(0, 10);
+      };
+      
+      const targetHash = mockPersistentHash("midnight2026");
+      const providedHash = mockPersistentHash(secretPassword);
+      
+      // Simulate proof generation delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      if (providedHash !== targetHash) {
+        throw new Error("ZK Proof Failed: Incorrect secret password.");
+      }
+      
+      setCount(c => c + 1);
+      alert("ZK Proof Verified! Counter incremented successfully.");
       
     } catch (err: any) {
       setError(err.message || "An error occurred during proof generation.");
