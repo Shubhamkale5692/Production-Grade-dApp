@@ -4,7 +4,6 @@ import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-p
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
 import { FetchZkConfigProvider } from '@midnight-ntwrk/midnight-js-fetch-zk-config-provider';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
-import { window } from 'globalthis/implementation';
 
 // Note: You must run `npm run compile` first so that the `counter` export is available.
 // @ts-ignore
@@ -40,7 +39,7 @@ async function deploy() {
     });
 
     console.log('✅ Contract successfully deployed!');
-    console.log('✅ Contract Address:', deployed.deployTxData.contractAddress);
+    console.log('✅ Contract Address:', deployed.deployTxData.public.contractAddress);
     console.log('Please copy this address and paste it into your README.md!');
   } catch (err) {
     console.error("Deployment failed:", err);
