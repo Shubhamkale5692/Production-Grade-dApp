@@ -1,7 +1,19 @@
 pragma language_version >= 0.14.0;
 
+import CompactStandardLibrary;
+
 export ledger counter: Cell<Uint<32>>;
+export ledger secret_hash: Cell<Bytes<32>>;
+
+witness secret_password(): Bytes<32>;
 
 export circuit increment(): [] {
+    let password = secret_password();
+    assert persistentHash(password) == secret_hash.read(), "Incorrect password";
     counter = counter.read() + 1;
+}
+
+export circuit constructor(initial_hash: Bytes<32>): [] {
+    secret_hash = initial_hash;
+    counter = 0;
 }
