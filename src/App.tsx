@@ -34,7 +34,7 @@ function App() {
       const wallet = (window as any).midnight[walletId];
       
       // Connect to Lace using actual DApp Connector API
-      const api = await wallet.enable(); // standard CIP-30/Midnight style
+      const api = await wallet.connect();
       
       try {
         const state = await api.state();
