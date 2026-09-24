@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../",
+  "sources": ["contracts/counter.compact", "compiler/zkir-v3-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAcA;;;;;;;;;;;;;MALA,AAAA,SAGC;;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;GAKA;EAHD;;;;;UAAY,cAAuB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAVnC;;;;;;;;;yEAAgC;IAChC;;;;;;;;;yEAAqC;IAUjC;;;;;;;2HAAuB,cAAY;;yEAAxB;UACX,KAAO;IAAP;;;;;;;2HAAA,KAAO;;yEAAA;;;;;;;GACV;ECjBD,AAAA,kBAAA;oEAAA;;;EDOA,AAAA,kBAAqC;;0DAArC,eAAqC;;;;;;;;;;;;;;GAAA;EAErC,AAAA,kBAGC;;;kEAF0D;;;;;;;;;;;uIAAW;;UAClE,KAAO;;;;;6CAAI;;;;;;;;;;;kHAAO;;;IAAlB;;;;;;;2HAAA,KAAO;;yEAAA;;GACV;;;;;;;;;;;;;;;;;;;;IARD;qCAAA;;;;;;;;;;;0GAAgC;KAAA;IAChC;qCAAA;;;;;;;;;;;0GAAqC;KAAA;;;;;;;;;;;;;;;;"
+}
