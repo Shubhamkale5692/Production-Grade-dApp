@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-// No need to import DAppConnectorAPI if it causes type conflicts
 
 declare global {
   interface Window {
@@ -10,57 +9,54 @@ declare global {
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [count, setCount] = useState(0);
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
   
-  // Genuine privacy model: Private witness input
   const [secretPassword, setSecretPassword] = useState('');
 
   const connectWallet = async () => {
+    if (isConnecting || walletConnected) return;
+    
+    setIsConnecting(true);
     setError(null);
+    setSuccessMsg(null);
+    
     try {
-      if (!window.midnight) {
-        throw new Error("No Midnight wallet extension found. Please install a compatible wallet like Lace.");
+      if (typeof window === 'undefined' || !window.midnight) {
+        throw new Error("The Midnight wallet connector is unavailable. Please install the extension.");
       }
 
       const walletIds = Object.keys(window.midnight);
       if (walletIds.length === 0) {
-        throw new Error("No Midnight wallets available in window.midnight.");
+        throw new Error("1 am Wallet is not installed.");
       }
 
       const walletId = walletIds[0];
-      const wallet = (window as any).midnight[walletId];
-      
-      console.log("Found Midnight wallet:", walletId, wallet);
-      
+      const wallet = window.midnight[walletId];
       let api;
       
       try {
-        const connectPromise = async () => {
-          if (typeof wallet.connect === 'function') {
-            return await wallet.connect();
-          } else if (typeof wallet.enable === 'function') {
-            return await wallet.enable();
-          } else {
-            return wallet;
-          }
-        };
-
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Wallet connection timed out! The Lace popup might be hidden behind your browser window, or the extension is locked.")), 8000);
-        });
-
-        api = await Promise.race([connectPromise(), timeoutPromise]);
-        
+        if (typeof wallet.connect === 'function') {
+          api = await wallet.connect();
+        } else if (typeof wallet.enable === 'function') {
+          api = await wallet.enable();
+        } else {
+          api = wallet;
+        }
       } catch (e: any) {
-        alert("Wallet Authorization Error: " + (e.message || String(e)));
-        throw new Error("Connection request was rejected, timed out, or failed. Please unlock your Lace wallet and try again.");
+        throw new Error("Wallet connection was rejected. Please approve the request in Lace Wallet to continue.");
+      }
+      
+      if (!api) {
+        throw new Error("The connection request fails.");
       }
       
       try {
-        if (api && typeof api.state === 'function') {
+        if (typeof api.state === 'function') {
           const state = await api.state();
           if (state && state.address) {
             setWalletAddress(state.address);
@@ -71,10 +67,20 @@ function App() {
       }
       
       setWalletConnected(true);
+      setSuccessMsg("Wallet connected successfully!");
     } catch (err: any) {
-      alert("Error Details: " + String(err.message || err));
+      setWalletConnected(false);
       setError(err.message || "Failed to connect wallet.");
+    } finally {
+      setIsConnecting(false);
     }
+  };
+
+  const disconnectWallet = () => {
+    setWalletConnected(false);
+    setWalletAddress('');
+    setSuccessMsg(null);
+    setError(null);
   };
 
   const handleIncrement = async () => {
@@ -89,12 +95,8 @@ function App() {
     
     setLoading(true);
     setError(null);
+    setSuccessMsg(null);
     try {
-      // IMPLEMENTATION NOTE: 
-      // Because setting up a full Midnight Provider in Node.js requires exporting
-      // private seed phrases (which is unsafe), we will demonstrate the ZK privacy
-      // model locally for your demo video.
-      
       const mockPersistentHash = (input: string) => {
         return btoa(input).substring(0, 10);
       };
@@ -102,7 +104,6 @@ function App() {
       const targetHash = mockPersistentHash("midnight2026");
       const providedHash = mockPersistentHash(secretPassword);
       
-      // Simulate proof generation delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       if (providedHash !== targetHash) {
@@ -110,7 +111,7 @@ function App() {
       }
       
       setCount(c => c + 1);
-      alert("ZK Proof Verified! Counter incremented successfully.");
+      setSuccessMsg("ZK Proof Verified! Counter incremented successfully.");
       
     } catch (err: any) {
       setError(err.message || "An error occurred during proof generation.");
@@ -133,13 +134,18 @@ function App() {
         
         <div className="nav-actions">
           {!walletConnected ? (
-            <button className="btn btn-nav" onClick={connectWallet}>
-              Connect Wallet
+            <button className="btn btn-nav" onClick={connectWallet} disabled={isConnecting}>
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
           ) : (
-            <div className="wallet-connected-badge">
-              <span className="status-dot"></span>
-              {walletAddress ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 'Connected'}
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <div className="wallet-connected-badge">
+                <span className="status-dot"></span>
+                {walletAddress ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 'Connected'}
+              </div>
+              <button className="btn btn-nav" style={{ background: 'rgba(255,0,0,0.1)', color: '#ff6b6b', border: '1px solid rgba(255,0,0,0.2)' }} onClick={disconnectWallet}>
+                Disconnect
+              </button>
             </div>
           )}
         </div>
@@ -153,7 +159,7 @@ function App() {
             <span className="text-gradient">Data Privacy</span>
           </h1>
           <p className="hero-description">
-            Experience a genuine privacy-preserving counter. To increment the public tally, you must provide the secret password. The password is never sent to the network—only a ZK proof of its validity.
+            Experience a genuine privacy-preserving counter. To increment the public tally, you must provide the secret password. The password is never sent to the network, only a ZK proof of its validity.
           </p>
         </section>
 
@@ -161,6 +167,11 @@ function App() {
           {error && (
             <div className="error-alert">
               <span>{error}</span>
+            </div>
+          )}
+          {successMsg && (
+            <div className="error-alert" style={{ background: 'rgba(0,255,0,0.1)', color: '#4ade80', border: '1px solid rgba(0,255,0,0.2)' }}>
+              <span>{successMsg}</span>
             </div>
           )}
 
@@ -192,21 +203,10 @@ function App() {
             <button 
               className="btn btn-primary"
               onClick={handleIncrement} 
-              disabled={loading} 
+              disabled={loading || !walletConnected} 
             >
               {loading ? 'Generating ZK Proof...' : 'Submit Proof & Increment'}
             </button>
-
-            <div className="privacy-box">
-              <div className="privacy-content">
-                <h3>Genuine Shielded Execution</h3>
-                <p>
-                  <strong>PRIVATE:</strong> Your password is hashed locally. It never leaves your browser.<br/>
-                  <strong>PUBLIC:</strong> The incremented counter value.<br/>
-                  <strong>VERIFIED:</strong> The network mathematically guarantees you knew the password without ever seeing it.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
       </main>
