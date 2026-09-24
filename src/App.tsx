@@ -50,15 +50,27 @@ function App() {
       let api;
       
       try {
-        if (typeof wallet.connect === 'function') {
-          api = await wallet.connect();
-        } else if (typeof wallet.enable === 'function') {
-          api = await wallet.enable();
-        } else {
-          api = wallet;
-        }
+        console.log("Detected Midnight Wallet IDs:", walletIds);
+        console.log("Attempting to connect to:", walletId);
+        
+        const connectPromise = async () => {
+          if (typeof wallet.connect === 'function') {
+            return await wallet.connect();
+          } else if (typeof wallet.enable === 'function') {
+            return await wallet.enable();
+          } else {
+            return wallet;
+          }
+        };
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Wallet connection timed out! Ensure 1AM Wallet is unlocked and check for hidden popups.")), 8000);
+        });
+
+        api = await Promise.race([connectPromise(), timeoutPromise]);
       } catch (e: any) {
-        throw new Error("Wallet connection was rejected. Please try again.");
+        console.error("Wallet connection error details:", e);
+        throw new Error(e.message || "Wallet connection was rejected. Please try again.");
       }
       
       if (!api) {
