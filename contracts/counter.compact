@@ -8,7 +8,7 @@ export ledger secret_hash: Bytes<32>;
 witness secret_password(): Bytes<32>;
 
 export circuit increment(): [] {
-    assert(persistentHash(secret_password()) == secret_hash, "Incorrect password");
+    assert(persistentHash<Bytes<32>>(secret_password()) == secret_hash, "Incorrect password");
     counter = counter + 1;
 }
 
