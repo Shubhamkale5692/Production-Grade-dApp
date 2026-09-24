@@ -27,15 +27,25 @@ function App() {
     
     try {
       if (typeof window === 'undefined' || !window.midnight) {
-        throw new Error("The Midnight wallet connector is unavailable. Please install a compatible wallet like Lace.");
+        throw new Error("The Midnight wallet connector is unavailable. Please install 1AM Wallet.");
       }
 
       const walletIds = Object.keys(window.midnight);
       if (walletIds.length === 0) {
-        throw new Error("1 am Wallet is not installed.");
+        throw new Error("1AM Wallet is not installed.");
       }
 
-      const walletId = walletIds[0];
+      // Try to specifically find 1AM Wallet if multiple are installed
+      let walletId = walletIds.find(id => 
+        id.toLowerCase().includes('1am') || 
+        (window.midnight[id].name && window.midnight[id].name.toLowerCase().includes('1am'))
+      );
+      
+      // Fallback to the first available wallet if specific name isn't found
+      if (!walletId) {
+        walletId = walletIds[0];
+      }
+
       const wallet = window.midnight[walletId];
       let api;
       
@@ -67,7 +77,7 @@ function App() {
       }
       
       setWalletConnected(true);
-      setSuccessMsg("Wallet connected successfully!");
+      setSuccessMsg("1AM Wallet connected successfully!");
     } catch (err: any) {
       setWalletConnected(false);
       setError(err.message || "Failed to connect wallet.");
@@ -135,7 +145,7 @@ function App() {
         <div className="nav-actions">
           {!walletConnected ? (
             <button className="btn btn-nav" onClick={connectWallet} disabled={isConnecting}>
-              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+              {isConnecting ? 'Connecting...' : 'Connect 1AM Wallet'}
             </button>
           ) : (
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
