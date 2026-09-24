@@ -36,19 +36,18 @@ function App() {
       console.log("Found Midnight wallet:", walletId, wallet);
       
       let api;
-      // Try to connect using whichever method the wallet exposes
-      if (typeof wallet.enable === 'function') {
-        api = await wallet.enable();
-      } else if (typeof wallet.connect === 'function') {
-        // Some newer API versions require a network string, try preprod or undefined
-        try {
-          api = await wallet.connect('preprod');
-        } catch(e) {
+      
+      try {
+        if (typeof wallet.connect === 'function') {
           api = await wallet.connect();
+        } else if (typeof wallet.enable === 'function') {
+          api = await wallet.enable();
+        } else {
+          api = wallet;
         }
-      } else {
-        // Some API versions just expose the API directly on the wallet object
-        api = wallet;
+      } catch (e: any) {
+        alert("Wallet Authorization Error: " + (e.message || String(e)));
+        throw new Error("Connection request was rejected or failed. Please unlock your Lace wallet and try again.");
       }
       
       try {
@@ -64,6 +63,7 @@ function App() {
       
       setWalletConnected(true);
     } catch (err: any) {
+      alert("Error Details: " + String(err.message || err));
       setError(err.message || "Failed to connect wallet.");
     }
   };
