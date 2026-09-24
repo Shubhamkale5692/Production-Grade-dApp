@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { DAppConnectorAPI } from '@midnight-ntwrk/dapp-connector-api';
+// No need to import DAppConnectorAPI if it causes type conflicts
 
 declare global {
   interface Window {
-    midnight?: Record<string, any>;
+    midnight?: any;
   }
 }
 
@@ -31,7 +31,7 @@ function App() {
       }
 
       const walletId = walletIds[0];
-      const wallet = window.midnight[walletId];
+      const wallet = (window as any).midnight[walletId];
       
       // Connect to Lace using actual DApp Connector API
       const api = await wallet.enable(); // standard CIP-30/Midnight style
