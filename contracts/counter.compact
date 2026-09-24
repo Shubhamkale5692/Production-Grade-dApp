@@ -13,6 +13,6 @@ export circuit increment(): [] {
 }
 
 constructor(initial_hash: Bytes<32>) {
-    secret_hash = initial_hash;
+    secret_hash = disclose(initial_hash);
     counter = 0;
 }
