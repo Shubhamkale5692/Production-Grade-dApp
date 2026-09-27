@@ -1,9 +1,10 @@
 # Midnight Counter dApp
-![CI](https://github.com/yourusername/yourrepo/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Shubhamkale5692/Production-Grade-dApp/actions/workflows/ci.yml/badge.svg)
+
 > A privacy-preserving counter application built on Midnight.
 
 ## Live Demo
-[Live URL]
+**[x INSERT LIVE VERCEL/NETLIFY LINK HERE AFTER DEPLOYMENT]**
 
 ## Contract Address
 | Network  | Address                          |
@@ -29,7 +30,7 @@ An on-chain observer sees that the counter was incremented by an authorized tran
 ## Prerequisites
 - Node.js v22
 - Midnight Compact Compiler
-- A compatible Midnight Wallet
+- A compatible Midnight 1AM Wallet
 
 ## Setup & Run Locally
 ```bash
