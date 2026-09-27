@@ -4,7 +4,8 @@
 > A privacy-preserving counter application built on Midnight.
 
 ## Live Demo
-**[x INSERT LIVE VERCEL/NETLIFY LINK HERE AFTER DEPLOYMENT]**
+
+[Open Confidential Bouncer](https://production-grade-d-app.vercel.app/)
 
 ## Contract Address
 | Network  | Address                          |
