@@ -6,6 +6,7 @@ export default defineConfig({
     wasm()
   ],
   optimizeDeps: {
+    include: ['buffer'],
     exclude: [
       '@midnight-ntwrk/midnight-js-contracts'
     ]
