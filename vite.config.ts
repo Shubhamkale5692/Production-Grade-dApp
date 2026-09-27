@@ -7,8 +7,7 @@ export default defineConfig({
   ],
   optimizeDeps: {
     exclude: [
-      '@midnight-ntwrk/midnight-js-contracts',
-      '@midnight-ntwrk/compact-runtime'
+      '@midnight-ntwrk/midnight-js-contracts'
     ]
   },
   build: {
