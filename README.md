@@ -10,7 +10,7 @@
 ## Contract Address
 | Network  | Address                          |
 |----------|----------------------------------|
-| Preprod  | [PASTE CONTRACT ADDRESS]         |
+| Preprod  | mn_addr_preprod1crfd8zcaksx2r4acrfjmdexcrznwq778wdhm4wla5my6qfmglg5tl |
 
 ## What This Does
 This application demonstrates a simple counter on the Midnight network where the user's inputs are kept private while updating a public state.
